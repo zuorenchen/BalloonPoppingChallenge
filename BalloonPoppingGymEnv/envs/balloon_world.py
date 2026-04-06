@@ -632,6 +632,9 @@ class BalloonPoppingEnv(gym.Env):
         # Initialize attitude
         e0_init, e1_init, e2_init, e3_init = get_initial_attitude(inclination, heading)
 
+        # Temperary set propellent mass to 0
+        propellent_mass=0
+
         # Store initial conditions
         self.initial_solution = [
             t_initial,
@@ -648,6 +651,7 @@ class BalloonPoppingEnv(gym.Env):
             w1_init,
             w2_init,
             w3_init,
+            propellent_mass,
         ]
 
     def __init_rocket_simulation(self):
@@ -837,6 +841,8 @@ class BalloonPoppingEnv(gym.Env):
             controller_function=throttle_controller_function,
             return_controller=False,
         )
+
+        self.initial_solution[13] = rocket.motor.propellant_initial_mass
 
         self._rocket_flight = Flight(
             rocket=rocket,
